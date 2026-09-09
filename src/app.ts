@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import cookieParser from 'cookie-parser';
-import express, { type NextFunction, type Request, type Response } from 'express';
+import express, { type NextFunction, type Request, type RequestHandler, type Response } from 'express';
 import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet';
 import { requireSameOrigin } from './auth.js';
@@ -12,13 +12,18 @@ import reportRoutes from './routes/reportRoutes.js';
 import studentRoutes from './routes/studentRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
+// O builder da Vercel pode resolver a declaração CommonJS do Helmet mesmo
+// quando o runtime carrega corretamente o export default ESM. A assinatura
+// explícita mantém a chamada tipada e evita o falso erro "not callable".
+const createHelmetMiddleware = helmet as unknown as (options?: object) => RequestHandler;
+
 const app = express();
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.resolve(currentDir, '../public');
 
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
-app.use(helmet({
+app.use(createHelmetMiddleware({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
