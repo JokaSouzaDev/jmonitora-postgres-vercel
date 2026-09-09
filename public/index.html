@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Acesso à plataforma de monitoria escolar JMonitora+">
+  <title>Entrar | JMonitora+</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/login.js" defer></script>
+</head>
+<body class="login-page">
+  <main class="login-shell">
+    <section class="login-brand" aria-label="Apresentação do sistema">
+      <a class="brand brand-light" href="/">
+        <span class="brand-mark">J+</span>
+        <span><strong>JMonitora+</strong><small>Monitoria escolar inteligente</small></span>
+      </a>
+      <div class="login-message">
+        <span class="eyebrow">Acompanhamento pedagógico</span>
+        <h1>Cada observação ajuda a construir um caminho melhor.</h1>
+        <p>Registre avanços, identifique dificuldades e acompanhe os alunos com organização e segurança.</p>
+      </div>
+      <p class="login-foot">Ambiente protegido para monitores e professores.</p>
+    </section>
+
+    <section class="login-card" aria-labelledby="login-title">
+      <div class="mobile-brand">
+        <span class="brand-mark">J+</span><strong>JMonitora+</strong>
+      </div>
+      <span class="eyebrow eyebrow-dark">Bem-vindo</span>
+      <h2 id="login-title">Entre na sua conta</h2>
+      <p class="muted">Use o e-mail e a senha cadastrados pelo administrador.</p>
+
+      <form id="login-form" class="form-stack" novalidate>
+        <label>E-mail
+          <input id="email" name="email" type="email" autocomplete="username" placeholder="voce@escola.com" required>
+        </label>
+        <label>Senha
+          <span class="password-field">
+            <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" required>
+            <button id="toggle-password" class="text-button" type="button" aria-label="Mostrar senha">Mostrar</button>
+          </span>
+        </label>
+        <div id="feedback" class="alert hidden" role="alert" aria-live="polite"></div>
+        <button id="login-button" class="button button-primary button-large" type="submit">Entrar no JMonitora+</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

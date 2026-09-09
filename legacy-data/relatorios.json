@@ -1,0 +1,8 @@
+[
+  {"id":"a813ac37-f2b0-41a8-89f8-aa9385bf77ea","ra":"123456","alunoId":"789","observacao":"Aluno demonstrou excelente participacao nas atividades pedagogicas.","criadoEm":"2026-07-30T11:32:03.694Z"},
+  {"id":"7ba62c46-cfbb-4cc9-8ad9-2d7b21c56c35","ra":"123456","alunoId":"789","observacao":"Aluno demonstrou excelente participacao nas atividades pedagogicas.","criadoEm":"2026-07-30T11:32:18.068Z"},
+  {"id":"b972610e-f9fb-4dde-9ccf-65fed014afd2","ra":"12341234","alunoId":"1","observacao":"observação","criadoEm":"2026-07-30T11:55:48.652Z"},
+  {"id":"3eb00178-615a-45ca-ba3e-1d0d19458f25","ra":"45678901988","alunoId":"2","observacao":"dificuldade na matéria de matematica","criadoEm":"2026-07-30T11:57:24.259Z"},
+  {"id":"2f93dd3d-36e5-43b6-81f3-870a53c7008f","ra":"1122563781","alunoId":"3","observacao":"Desempenho baixo na matéria de Banco de Dados","criadoEm":"2026-07-30T12:03:51.071Z"},
+  {"id":"ceb8ea8a-bf16-430f-a8e0-e3698ae80c59","ra":"000162138752187","alunoId":"1","observacao":"Evolução na matéria de Português","criadoEm":"2026-07-30T12:11:24.312Z"}
+]

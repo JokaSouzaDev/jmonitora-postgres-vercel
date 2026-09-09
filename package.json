@@ -1,0 +1,43 @@
+{
+  "name": "sistema-jmonitora",
+  "version": "1.0.0",
+  "private": true,
+  "description": "JMonitora+ - plataforma de monitoria escolar com PostgreSQL, autenticação e deploy na Vercel",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --import tsx scripts/dev-server.ts",
+    "build": "tsc --noEmit",
+    "start": "node --import tsx scripts/dev-server.ts",
+    "db:migrate": "node --import tsx scripts/migrate.ts",
+    "db:seed": "node --import tsx scripts/seed.ts",
+    "db:import-json": "node --import tsx scripts/import-json.ts",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "check": "npm run build && npm test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.3",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^22.18.1",
+    "@types/pg": "^8.15.5",
+    "@types/supertest": "^7.2.1",
+    "supertest": "^7.2.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
