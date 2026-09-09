@@ -65,7 +65,15 @@ app.use('/api/relatorios', reportRoutes);
 app.use('/api/usuarios', userRoutes);
 
 // Utilizado apenas no desenvolvimento local. Na Vercel, public/** é servido pela CDN.
-if (process.env.VERCEL !== '1') app.use(express.static(publicDir));
+// Localmente, o Express entrega os arquivos.
+// Na Vercel, a página inicial é entregue pela CDN.
+if (process.env.VERCEL !== '1') {
+  app.use(express.static(publicDir));
+} else {
+  app.get('/', (_req, res) => {
+    res.redirect(302, '/index.html');
+  });
+}
 
 app.use('/api', (_req, _res, next) => next(new AppError(404, 'Rota não encontrada.', 'NOT_FOUND')));
 
