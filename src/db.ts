@@ -8,13 +8,27 @@ let pool: pg.Pool | undefined;
 function getPool(): pg.Pool {
   if (pool) return pool;
 
+  const preferredConnectionStrings = [
+    process.env.DATABASE_URL,
+    process.env.DATABASE_URL_DATABASE_URL,
+    process.env.DATABASE_URL_POSTGRES_URL,
+    process.env.DATABASE_URL_UNPOOLED,
+    process.env.STORAGE_URL,
+    process.env.POSTGRES_URL,
+    process.env.NEON_DATABASE_URL,
+  ];
+
+  const detectedConnectionString = Object.entries(process.env).find(
+    ([key, value]) =>
+      (key.endsWith('DATABASE_URL') || key.endsWith('POSTGRES_URL') || key.endsWith('URL_UNPOOLED')) &&
+      typeof value === 'string' &&
+      /^postgres(?:ql)?:\/\//i.test(value),
+  )?.[1];
+
   const connectionString =
-    process.env.DATABASE_URL ??
-    process.env.DATABASE_URL_DATABASE_URL ??
-    process.env.DATABASE_URL_POSTGRES_URL ??
-    process.env.STORAGE_URL ??
-    process.env.POSTGRES_URL ??
-    process.env.NEON_DATABASE_URL;
+    preferredConnectionStrings.find((value) => value && /^postgres(?:ql)?:\/\//i.test(value)) ??
+    detectedConnectionString;
+
   if (!connectionString) {
     throw new AppError(503, 'Banco de dados não configurado.', 'DATABASE_NOT_CONFIGURED');
   }
