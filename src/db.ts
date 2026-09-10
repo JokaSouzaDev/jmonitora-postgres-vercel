@@ -8,7 +8,7 @@ let pool: pg.Pool | undefined;
 function getPool(): pg.Pool {
   if (pool) return pool;
 
-  const connectionString = process.env.DATABASE_URL;
+  const connectionString =\n    process.env.DATABASE_URL ??\n    process.env.STORAGE_URL ??\n    process.env.POSTGRES_URL ??\n    process.env.NEON_DATABASE_URL;
   if (!connectionString) {
     throw new AppError(503, 'Banco de dados não configurado.', 'DATABASE_NOT_CONFIGURED');
   }
