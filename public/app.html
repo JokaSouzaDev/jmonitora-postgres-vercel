@@ -1,103 +1,637 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Painel da plataforma JMonitora+">
-  <title>Painel | JMonitora+</title>
-  <link rel="stylesheet" href="/styles.css">
-  <script src="/app.js" defer></script>
-</head>
-<body class="app-page">
-  <div id="boot" class="boot"><span class="spinner"></span><p>Preparando seu painel...</p></div>
-  <div id="app" class="app-shell hidden">
-    <aside class="sidebar">
-      <a class="brand brand-light" href="/app.html">
-        <span class="brand-mark">J+</span>
-        <span><strong>JMonitora+</strong><small>Monitoria escolar</small></span>
-      </a>
-      <nav class="nav" aria-label="Navegação principal">
-        <button class="nav-item role-monitor role-admin" data-view="registrar"><span>＋</span>Nova observação</button>
-        <button class="nav-item role-professor role-admin" data-view="relatorios"><span>▤</span>Relatórios</button>
-        <button class="nav-item role-professor role-admin" data-view="alunos"><span>◎</span>Alunos</button>
-        <button class="nav-item role-admin" data-view="usuarios"><span>♙</span>Usuários</button>
-      </nav>
-      <div class="sidebar-profile">
-        <span id="avatar" class="avatar"></span>
-        <span><strong id="user-name"></strong><small id="user-role"></small></span>
-        <button id="logout" class="icon-button" type="button" title="Sair" aria-label="Sair">↗</button>
-      </div>
-    </aside>
-
-    <main class="main">
-      <header class="topbar">
-        <button id="menu-toggle" class="menu-button" type="button" aria-label="Abrir menu">☰</button>
-        <div><span class="eyebrow eyebrow-dark">JMonitora+</span><h1 id="page-title">Painel</h1></div>
-        <span id="status-pill" class="status-pill">● Sistema online</span>
-      </header>
-
-      <div id="global-feedback" class="alert hidden" role="alert" aria-live="polite"></div>
-
-      <section id="view-registrar" class="view hidden" aria-labelledby="registrar-title">
-        <div class="page-heading"><div><h2 id="registrar-title">Nova observação</h2><p>Selecione o aluno e registre o acompanhamento pedagógico.</p></div></div>
-        <div class="grid-main">
-          <article class="panel">
-            <form id="report-form" class="form-stack" novalidate>
-              <label>Aluno
-                <select id="report-student" name="studentId" required><option value="">Carregando alunos...</option></select>
-                <small>O RA e o nome vêm do cadastro para evitar associações incorretas.</small>
-              </label>
-              <label>Observação pedagógica
-                <textarea id="observation" name="observation" rows="8" minlength="10" maxlength="2000" placeholder="Descreva comportamento, desempenho, participação, dificuldades ou evolução..." required></textarea>
-                <small class="between"><span>Mínimo de 10 caracteres</span><span id="observation-count">0 / 2000</span></small>
-              </label>
-              <div id="report-feedback" class="alert hidden" role="alert"></div>
-              <div class="form-actions"><button type="reset" class="button button-secondary">Limpar</button><button class="button button-primary" type="submit">Salvar observação</button></div>
-            </form>
-          </article>
-          <aside class="tip-card"><span class="tip-icon">✓</span><h3>Registro confiável</h3><p>Seja claro, objetivo e registre apenas informações relevantes para o acompanhamento pedagógico.</p></aside>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#13243e" />
+    <meta
+      name="description"
+      content="Painel de acompanhamento pedagógico JM Monitora"
+    />
+    <title>Painel | JM Monitora</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body class="app-page">
+    <a class="skip-link" href="#main">Ir para o conteúdo</a>
+    <div id="boot" class="boot">
+      <span class="spinner" aria-hidden="true"></span>
+      <p id="boot-message" role="status">Preparando seu painel…</p>
+      <button id="boot-retry" class="button hidden" type="button">
+        Tentar novamente</button
+      ><a href="/" class="back-link">Voltar para entrar</a>
+    </div>
+    <div id="app" class="app-shell hidden">
+      <aside class="sidebar">
+        <a href="/app.html" class="brand"
+          ><span class="brand-mark">JM<span>+</span></span
+          ><span>JM Monitora<small>ACOMPANHAMENTO ESCOLAR</small></span></a
+        >
+        <p class="nav-caption">SEU ESPAÇO DE TRABALHO</p>
+        <nav class="nav" aria-label="Navegação principal">
+          <button class="nav-item" type="button" data-view="relatorios">
+            <span aria-hidden="true">▤</span><span>Acompanhar</span></button
+          ><button class="nav-item" type="button" data-view="registrar">
+            <span aria-hidden="true">+</span><span>Registrar</span></button
+          ><button
+            class="nav-item"
+            type="button"
+            data-view="alunos"
+            data-roles="PROFESSOR ADMIN"
+          >
+            <span aria-hidden="true">◎</span><span>Alunos</span></button
+          ><button
+            class="nav-item"
+            type="button"
+            data-view="usuarios"
+            data-roles="ADMIN"
+          >
+            <span aria-hidden="true">♙</span><span>Acessos</span>
+          </button>
+        </nav>
+        <div class="sidebar-tip">
+          <span>UM REGISTRO FAZ DIFERENÇA</span>
+          <p>Pequenas observações ajudam a enxergar grandes avanços.</p>
         </div>
-      </section>
-
-      <section id="view-relatorios" class="view hidden" aria-labelledby="reports-title">
-        <div class="page-heading"><div><h2 id="reports-title">Relatórios pedagógicos</h2><p>Acompanhe o histórico registrado pelos monitores.</p></div><span id="report-total" class="counter">0 registros</span></div>
-        <div class="toolbar"><input id="report-search" type="search" placeholder="Buscar por aluno, RA, monitor ou observação"><button id="report-refresh" class="button button-secondary" type="button">Atualizar</button></div>
-        <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Aluno</th><th>RA</th><th>Observação</th><th>Registrado por</th><th>Data</th><th></th></tr></thead><tbody id="report-rows"></tbody></table></div><div id="report-empty" class="empty hidden">Nenhum relatório encontrado.</div></article>
-      </section>
-
-      <section id="view-alunos" class="view hidden" aria-labelledby="students-title">
-        <div class="page-heading"><div><h2 id="students-title">Alunos</h2><p>Cadastre e mantenha os dados usados nos relatórios.</p></div><button id="new-student" class="button button-primary" type="button">Cadastrar aluno</button></div>
-        <div class="toolbar"><input id="student-search" type="search" placeholder="Buscar por nome ou RA"><label class="check"><input id="show-inactive-students" type="checkbox"> Mostrar inativos</label></div>
-        <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Nome</th><th>RA</th><th>Curso</th><th>Semestre</th><th>Status</th><th></th></tr></thead><tbody id="student-rows"></tbody></table></div><div id="student-empty" class="empty hidden">Nenhum aluno encontrado.</div></article>
-      </section>
-
-      <section id="view-usuarios" class="view hidden" aria-labelledby="users-title">
-        <div class="page-heading"><div><h2 id="users-title">Usuários</h2><p>Gerencie quem pode acessar o sistema.</p></div><button id="new-user" class="button button-primary" type="button">Novo usuário</button></div>
-        <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Status</th><th></th></tr></thead><tbody id="user-rows"></tbody></table></div></article>
-      </section>
-    </main>
-  </div>
-
-  <dialog id="student-dialog" class="dialog">
-    <form id="student-form" class="form-stack" method="dialog">
-      <div class="dialog-head"><div><span class="eyebrow eyebrow-dark">Cadastro</span><h2 id="student-dialog-title">Novo aluno</h2></div><button class="icon-button close-dialog" type="button" aria-label="Fechar">×</button></div>
-      <input id="student-id" type="hidden">
-      <div class="form-grid"><label>Nome completo<input id="student-name" required maxlength="160"></label><label>RA<input id="student-ra" required maxlength="40"></label><label>E-mail<input id="student-email" type="email" maxlength="254"></label><label>Telefone<input id="student-phone" maxlength="30"></label><label>Curso<input id="student-course" required maxlength="160"></label><label>Semestre<input id="student-semester" type="number" min="1" max="20" required></label></div>
-      <label id="student-active-wrap" class="check hidden"><input id="student-active" type="checkbox"> Cadastro ativo</label>
-      <div id="student-feedback" class="alert hidden"></div>
-      <div class="form-actions"><button class="button button-secondary close-dialog" type="button">Cancelar</button><button class="button button-primary" type="submit">Salvar aluno</button></div>
-    </form>
-  </dialog>
-
-  <dialog id="user-dialog" class="dialog">
-    <form id="user-form" class="form-stack" method="dialog">
-      <div class="dialog-head"><div><span class="eyebrow eyebrow-dark">Acesso</span><h2>Novo usuário</h2></div><button class="icon-button close-dialog" type="button" aria-label="Fechar">×</button></div>
-      <label>Nome completo<input id="account-name" required maxlength="120"></label><label>E-mail<input id="account-email" type="email" required maxlength="254"></label><label>Senha inicial<input id="account-password" type="password" minlength="8" maxlength="128" required></label><label>Perfil<select id="account-role"><option value="MONITOR">Monitor</option><option value="PROFESSOR">Professor</option><option value="ADMIN">Administrador</option></select></label>
-      <div id="user-feedback" class="alert hidden"></div>
-      <div class="form-actions"><button class="button button-secondary close-dialog" type="button">Cancelar</button><button class="button button-primary" type="submit">Criar usuário</button></div>
-    </form>
-  </dialog>
-
-  <dialog id="report-dialog" class="dialog dialog-wide"><div class="dialog-head"><div><span class="eyebrow eyebrow-dark">Detalhes</span><h2 id="detail-student"></h2></div><button class="icon-button close-dialog" type="button" aria-label="Fechar">×</button></div><div class="detail-meta"><span><small>RA</small><strong id="detail-ra"></strong></span><span><small>Autor</small><strong id="detail-author"></strong></span><span><small>Data</small><strong id="detail-date"></strong></span></div><p id="detail-observation" class="observation-detail"></p></dialog>
-</body>
+        <div class="sidebar-foot">
+          Ambiente da equipe escolar<br /><strong>JM Monitora · 2.0</strong>
+        </div>
+      </aside>
+      <main id="main" class="main">
+        <header class="topbar">
+          <a href="/app.html" class="compact-brand">JM<span>+</span></a>
+          <div>
+            <p class="eyebrow">ACOMPANHAMENTO ESCOLAR</p>
+            <h1 id="page-title">Visão geral</h1>
+          </div>
+          <div class="topbar-actions">
+            <span id="connection" class="connection" role="status"
+              >Conectando…</span
+            ><button
+              id="account-open"
+              type="button"
+              class="account-button"
+              aria-label="Minha conta"
+            >
+              <span id="avatar" class="avatar"></span
+              ><span id="user-name"></span><span aria-hidden="true">⌄</span>
+            </button>
+          </div>
+        </header>
+        <div id="global-feedback" class="alert hidden" role="alert"></div>
+        <div id="session-alert" class="alert hidden" role="alert">
+          Sua sessão expirou.
+          <a href="/" target="_blank" rel="noopener"
+            >Entre novamente em outra aba</a
+          >
+          e retorne para tentar salvar. Seu formulário continua nesta tela.
+        </div>
+        <section
+          id="view-relatorios"
+          class="view hidden"
+          aria-labelledby="reports-title"
+        >
+          <div class="welcome">
+            <div>
+              <span class="eyebrow" id="today"></span>
+              <h2 id="greeting">O próximo avanço começa aqui.</h2>
+              <p id="report-intro">
+                Cada registro conta uma parte da evolução dos alunos.
+              </p>
+            </div>
+            <button class="button primary" type="button" data-go="registrar">
+              + Nova observação
+            </button>
+          </div>
+          <div class="stats" aria-label="Resumo dos relatórios">
+            <div class="stat">
+              <span>Total de registros</span><strong id="stat-total">—</strong
+              ><small id="stat-scope">Dentro do seu acesso</small>
+            </div>
+            <div class="stat">
+              <span>Novos</span><strong id="stat-new">—</strong
+              ><small>Aguardando atenção</small>
+            </div>
+            <div class="stat">
+              <span>Em acompanhamento</span
+              ><strong id="stat-reviewing">—</strong
+              ><small>Com devolutiva</small>
+            </div>
+            <div class="stat">
+              <span>Concluídos</span><strong id="stat-resolved">—</strong
+              ><small>Ciclo finalizado</small>
+            </div>
+          </div>
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">HISTÓRICO PEDAGÓGICO</span>
+              <h2 id="reports-title">Observações e devolutivas</h2>
+            </div>
+            <button id="report-refresh" class="button subtle" type="button">
+              ↻ Atualizar
+            </button>
+          </div>
+          <div class="filter-panel">
+            <label class="search-field"
+              >Buscar registros<input
+                id="report-search"
+                type="search"
+                placeholder="Nome, RA, autor ou observação"
+                maxlength="120" /></label
+            ><label
+              >Status<select id="report-status">
+                <option value="">Todos os status</option>
+                <option value="NEW">Novos</option>
+                <option value="IN_REVIEW">Em acompanhamento</option>
+                <option value="RESOLVED">Concluídos</option>
+              </select></label
+            >
+            <details class="date-filter">
+              <summary>Filtrar por data</summary>
+              <div class="form-grid">
+                <label>De<input id="report-from" type="date" /></label
+                ><label>Até<input id="report-to" type="date" /></label>
+              </div>
+            </details>
+            <button
+              id="clear-report-filters"
+              class="button subtle"
+              type="button"
+            >
+              Limpar filtros
+            </button>
+          </div>
+          <p id="ra-filter" class="muted hidden"></p>
+          <div id="reports-list" class="record-list" aria-live="polite"></div>
+          <div class="pagination" id="reports-pagination">
+            <button
+              class="button"
+              type="button"
+              data-page="reports"
+              data-direction="-1"
+            >
+              ← Anterior</button
+            ><span id="reports-page" role="status"></span
+            ><button
+              class="button"
+              type="button"
+              data-page="reports"
+              data-direction="1"
+            >
+              Próxima →
+            </button>
+          </div>
+        </section>
+        <section
+          id="view-registrar"
+          class="view hidden"
+          aria-labelledby="registrar-title"
+        >
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">UM NOVO PASSO NO ACOMPANHAMENTO</span>
+              <h2 id="registrar-title">Registrar observação</h2>
+              <p class="muted">
+                Localize o aluno pelo RA e conte o que você observou.
+              </p>
+            </div>
+          </div>
+          <div class="compose-layout">
+            <article class="panel">
+              <form id="report-form" class="form-stack">
+                <label
+                  >RA do aluno
+                  <div class="input-action">
+                    <input
+                      id="report-ra"
+                      maxlength="40"
+                      autocapitalize="characters"
+                      spellcheck="false"
+                      placeholder="Digite o RA completo"
+                      required
+                    /><button id="find-student" class="button" type="button">
+                      Localizar
+                    </button>
+                  </div></label
+                >
+                <div
+                  id="selected-student"
+                  class="student-summary hidden"
+                  role="status"
+                ></div>
+                <details>
+                  <summary>Não está com o RA? Buscar pelo nome</summary>
+                  <label class="search-field"
+                    >Nome do aluno<input
+                      id="lookup-search"
+                      type="search"
+                      maxlength="120"
+                      placeholder="Digite pelo menos 2 caracteres"
+                  /></label>
+                  <div
+                    id="lookup-results"
+                    class="lookup-results"
+                    aria-live="polite"
+                  ></div>
+                </details>
+                <label
+                  >Observação pedagógica<textarea
+                    id="observation"
+                    rows="7"
+                    minlength="10"
+                    maxlength="2000"
+                    placeholder="Descreva avanços, dificuldades, participação e o contexto da atividade."
+                    required
+                  ></textarea
+                  ><small class="between"
+                    ><span>De 10 a 2.000 caracteres</span
+                    ><span id="observation-count">0 / 2000</span></small
+                  ></label
+                >
+                <div
+                  id="report-feedback"
+                  class="alert hidden"
+                  role="alert"
+                ></div>
+                <div class="form-actions">
+                  <button id="clear-report" class="button" type="button">
+                    Limpar</button
+                  ><button class="button primary" type="submit">
+                    Salvar observação →
+                  </button>
+                </div>
+              </form>
+            </article>
+            <aside class="tip-card">
+              <span class="eyebrow">PARA UM BOM REGISTRO</span>
+              <h3>Clareza hoje.<br />Evolução amanhã.</h3>
+              <ol>
+                <li>Confira o RA e o nome do aluno.</li>
+                <li>Descreva o que aconteceu de forma objetiva.</li>
+                <li>
+                  Registre apenas o que ajuda no acompanhamento pedagógico.
+                </li>
+              </ol>
+              <p>
+                O professor pode responder e atualizar a situação. Acompanhe
+                tudo em “Acompanhar”.
+              </p>
+            </aside>
+          </div>
+        </section>
+        <section
+          id="view-alunos"
+          class="view hidden"
+          aria-labelledby="students-title"
+        >
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">CADASTROS DA ESCOLA</span>
+              <h2 id="students-title">Cada aluno, um RA.</h2>
+              <p class="muted">
+                Um cadastro único para manter todo o histórico conectado.
+              </p>
+            </div>
+            <button id="new-student" class="button primary" type="button">
+              + Cadastrar aluno
+            </button>
+          </div>
+          <div class="filter-panel">
+            <label class="search-field"
+              >Buscar alunos<input
+                id="student-search"
+                type="search"
+                placeholder="RA, nome ou turma"
+                maxlength="120" /></label
+            ><label class="check"
+              ><input id="show-inactive-students" type="checkbox" /> Incluir
+              alunos inativos</label
+            >
+          </div>
+          <div id="students-list" class="record-list" aria-live="polite"></div>
+          <div class="pagination">
+            <button
+              class="button"
+              type="button"
+              data-page="students"
+              data-direction="-1"
+            >
+              ← Anterior</button
+            ><span id="students-page" role="status"></span
+            ><button
+              class="button"
+              type="button"
+              data-page="students"
+              data-direction="1"
+            >
+              Próxima →
+            </button>
+          </div>
+        </section>
+        <section
+          id="view-usuarios"
+          class="view hidden"
+          aria-labelledby="users-title"
+        >
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">EQUIPE E PERMISSÕES</span>
+              <h2 id="users-title">Acessos à plataforma</h2>
+              <p class="muted">
+                Confira a identidade e o vínculo com a escola antes de aprovar.
+              </p>
+            </div>
+            <button id="new-user" class="button primary" type="button">
+              + Criar acesso
+            </button>
+          </div>
+          <div class="filter-panel">
+            <label class="search-field"
+              >Buscar pessoas<input
+                id="user-search"
+                type="search"
+                placeholder="Nome, RA ou e-mail"
+                maxlength="120" /></label
+            ><label class="check"
+              ><input id="pending-users" type="checkbox" /> Somente solicitações
+              pendentes</label
+            >
+          </div>
+          <div id="users-list" class="record-list" aria-live="polite"></div>
+          <div class="pagination">
+            <button
+              class="button"
+              type="button"
+              data-page="users"
+              data-direction="-1"
+            >
+              ← Anterior</button
+            ><span id="users-page" role="status"></span
+            ><button
+              class="button"
+              type="button"
+              data-page="users"
+              data-direction="1"
+            >
+              Próxima →
+            </button>
+          </div>
+        </section>
+        <footer class="main-footer">
+          JM Monitora <span>Informações para apoiar quem aprende.</span>
+        </footer>
+      </main>
+    </div>
+    <dialog
+      id="student-dialog"
+      class="dialog"
+      aria-labelledby="student-dialog-title"
+    >
+      <form id="student-form" class="form-stack">
+        <div class="dialog-head">
+          <div>
+            <span class="eyebrow">CADASTRO ESCOLAR</span>
+            <h2 id="student-dialog-title">Novo aluno</h2>
+          </div>
+          <button
+            type="button"
+            class="icon-button close-dialog"
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </div>
+        <label
+          >Nome completo<input
+            id="student-name"
+            maxlength="160"
+            required
+            autocomplete="off"
+        /></label>
+        <div class="form-grid">
+          <label
+            >RA<input
+              id="student-ra"
+              maxlength="40"
+              autocapitalize="characters"
+              spellcheck="false"
+              required /></label
+          ><label
+            >Turma<input
+              id="student-class"
+              maxlength="80"
+              placeholder="Ex.: 3 A – Técnico" /></label
+          ><label
+            >Curso<input id="student-course" maxlength="160" required /></label
+          ><label
+            >Semestre<input
+              id="student-semester"
+              type="number"
+              min="1"
+              max="20"
+              required /></label
+          ><label
+            >E-mail (opcional)<input
+              id="student-email"
+              type="email"
+              maxlength="254" /></label
+          ><label
+            >Telefone (opcional)<input
+              id="student-phone"
+              type="tel"
+              maxlength="30"
+          /></label>
+        </div>
+        <small id="ra-edit-hint"
+          >O RA identifica o aluno e mantém os relatórios vinculados a
+          ele.</small
+        ><label id="student-active-wrap" class="check hidden"
+          ><input id="student-active" type="checkbox" /> Aluno ativo</label
+        >
+        <div id="student-feedback" class="alert hidden" role="alert"></div>
+        <div class="form-actions">
+          <button type="button" class="button close-dialog">Cancelar</button
+          ><button type="submit" class="button primary">Salvar aluno</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="user-dialog" class="dialog" aria-labelledby="user-dialog-title">
+      <form id="user-form" class="form-stack">
+        <div class="dialog-head">
+          <div>
+            <span class="eyebrow">ACESSO INDIVIDUAL</span>
+            <h2 id="user-dialog-title">Criar acesso</h2>
+          </div>
+          <button
+            type="button"
+            class="icon-button close-dialog"
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </div>
+        <label
+          >Nome completo<input
+            id="account-name"
+            maxlength="120"
+            required /></label
+        ><label
+          >E-mail<input
+            id="account-email"
+            type="email"
+            maxlength="254"
+            required
+        /></label>
+        <div class="form-grid">
+          <label
+            >Perfil<select id="account-role">
+              <option value="MONITOR">Monitor</option>
+              <option value="PROFESSOR">Professor</option>
+              <option value="ADMIN">Administrador</option>
+            </select></label
+          ><label
+            >RA<input
+              id="account-ra"
+              maxlength="40"
+              placeholder="Obrigatório para monitor"
+          /></label>
+        </div>
+        <label id="password-label"
+          >Senha inicial ou nova senha<input
+            id="account-password"
+            type="password"
+            autocomplete="new-password"
+            minlength="8"
+            maxlength="72" /></label
+        ><small id="account-password-hint"
+          >Compartilhe a senha inicial somente com a pessoa cadastrada.</small
+        ><label id="account-active-wrap" class="check hidden"
+          ><input id="account-active" type="checkbox" /> Acesso ativo</label
+        ><label id="account-approval-wrap" class="hidden"
+          >Decisão sobre a solicitação<select id="account-approval">
+            <option value="">Manter pendente</option>
+            <option value="APPROVED">Aprovar acesso</option>
+            <option value="REJECTED">Recusar acesso</option>
+          </select></label
+        >
+        <div id="user-feedback" class="alert hidden" role="alert"></div>
+        <div class="form-actions">
+          <button class="button close-dialog" type="button">Cancelar</button
+          ><button class="button primary" type="submit">Salvar acesso</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog
+      id="report-dialog"
+      class="dialog dialog-wide"
+      aria-labelledby="detail-student"
+    >
+      <div class="dialog-head">
+        <div>
+          <span class="eyebrow">HISTÓRICO PEDAGÓGICO</span>
+          <h2 id="detail-student"></h2>
+          <p id="detail-meta" class="muted"></p>
+        </div>
+        <button
+          type="button"
+          class="icon-button close-dialog"
+          aria-label="Fechar"
+        >
+          ×
+        </button>
+      </div>
+      <span id="detail-status" class="badge"></span>
+      <h3>Observação original</h3>
+      <p id="detail-observation" class="observation-detail"></p>
+      <div class="section-heading">
+        <h3>Acompanhamento</h3>
+        <button id="print-report" type="button" class="button subtle">
+          Imprimir
+        </button>
+      </div>
+      <div id="report-events" class="timeline"></div>
+      <form id="review-form" class="form-stack hidden">
+        <label
+          >Atualizar situação<select id="review-status">
+            <option value="NEW">Novo</option>
+            <option value="IN_REVIEW">Em acompanhamento</option>
+            <option value="RESOLVED">Concluído</option>
+          </select></label
+        ><label
+          >Devolutiva ou próximo passo<textarea
+            id="review-note"
+            rows="4"
+            minlength="3"
+            maxlength="2000"
+            required
+          ></textarea>
+        </label>
+        <div id="review-feedback" class="alert hidden" role="alert"></div>
+        <button class="button primary" type="submit">
+          Registrar acompanhamento
+        </button>
+      </form>
+    </dialog>
+    <dialog
+      id="account-dialog"
+      class="dialog"
+      aria-labelledby="my-account-title"
+    >
+      <div class="dialog-head">
+        <div>
+          <span class="eyebrow">SEU ACESSO</span>
+          <h2 id="my-account-title">Minha conta</h2>
+        </div>
+        <button
+          type="button"
+          class="icon-button close-dialog"
+          aria-label="Fechar"
+        >
+          ×
+        </button>
+      </div>
+      <p id="my-account-info" class="muted"></p>
+      <details>
+        <summary>Alterar minha senha</summary>
+        <form id="password-form" class="form-stack">
+          <label
+            >Senha atual<input
+              id="current-password"
+              type="password"
+              autocomplete="current-password"
+              required
+              maxlength="128" /></label
+          ><label
+            >Nova senha<input
+              id="new-password"
+              type="password"
+              autocomplete="new-password"
+              minlength="8"
+              maxlength="72"
+              required /></label
+          ><label
+            >Confirme a nova senha<input
+              id="confirm-new-password"
+              type="password"
+              autocomplete="new-password"
+              minlength="8"
+              maxlength="72"
+              required
+          /></label>
+          <div id="password-feedback" class="alert hidden" role="alert"></div>
+          <button type="submit" class="button primary">
+            Alterar senha e sair
+          </button>
+        </form>
+      </details>
+      <div id="logout-feedback" class="alert hidden" role="alert"></div>
+      <button id="logout" type="button" class="button danger">
+        Sair da conta
+      </button>
+    </dialog>
+  </body>
 </html>

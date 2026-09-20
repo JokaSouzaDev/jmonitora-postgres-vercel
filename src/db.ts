@@ -1,11 +1,11 @@
-import pg from 'pg';
-import { AppError } from './errors.js';
+import pg from "pg";
+import { AppError } from "./errors.js";
 
 const { Pool } = pg;
 
 let pool: pg.Pool | undefined;
 
-function getPool(): pg.Pool {
+export function getPool(): pg.Pool {
   if (pool) return pool;
 
   const preferredConnectionStrings = [
@@ -20,17 +20,24 @@ function getPool(): pg.Pool {
 
   const detectedConnectionString = Object.entries(process.env).find(
     ([key, value]) =>
-      (key.endsWith('DATABASE_URL') || key.endsWith('POSTGRES_URL') || key.endsWith('URL_UNPOOLED')) &&
-      typeof value === 'string' &&
+      (key.endsWith("DATABASE_URL") ||
+        key.endsWith("POSTGRES_URL") ||
+        key.endsWith("URL_UNPOOLED")) &&
+      typeof value === "string" &&
       /^postgres(?:ql)?:\/\//i.test(value),
   )?.[1];
 
   const connectionString =
-    preferredConnectionStrings.find((value) => value && /^postgres(?:ql)?:\/\//i.test(value)) ??
-    detectedConnectionString;
+    preferredConnectionStrings.find(
+      (value) => value && /^postgres(?:ql)?:\/\//i.test(value),
+    ) ?? detectedConnectionString;
 
   if (!connectionString) {
-    throw new AppError(503, 'Banco de dados não configurado.', 'DATABASE_NOT_CONFIGURED');
+    throw new AppError(
+      503,
+      "Banco de dados não configurado.",
+      "DATABASE_NOT_CONFIGURED",
+    );
   }
 
   pool = new Pool({
@@ -38,17 +45,39 @@ function getPool(): pg.Pool {
     max: Number(process.env.PG_POOL_MAX ?? 5),
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 10_000,
+    statement_timeout: 15_000,
+    application_name: "jm-monitora",
   });
 
-  pool.on('error', (error) => {
-    console.error('Falha inesperada no pool PostgreSQL:', error.message);
+  pool.on("error", (error) => {
+    console.error("Falha inesperada no pool PostgreSQL:", error.message);
   });
 
   return pool;
 }
 
-export function query<T extends pg.QueryResultRow>(text: string, values: unknown[] = []): Promise<pg.QueryResult<T>> {
+export function query<T extends pg.QueryResultRow>(
+  text: string,
+  values: unknown[] = [],
+): Promise<pg.QueryResult<T>> {
   return getPool().query<T>(text, values);
+}
+
+export async function transaction<T>(
+  work: (client: pg.PoolClient) => Promise<T>,
+): Promise<T> {
+  const client = await getPool().connect();
+  try {
+    await client.query("BEGIN");
+    const result = await work(client);
+    await client.query("COMMIT");
+    return result;
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 export async function closePool(): Promise<void> {

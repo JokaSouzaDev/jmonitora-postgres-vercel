@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#13243e" />
+    <title>Solicitar cadastro | JM Monitora</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/cadastro.js"></script>
+  </head>
+  <body class="auth-page">
+    <main class="registration-shell">
+      <a class="brand" href="/"
+        ><span class="brand-mark">JM<span>+</span></span
+        ><span>JM Monitora<small>ACOMPANHAMENTO ESCOLAR</small></span></a
+      >
+      <section class="panel">
+        <a class="back-link" href="/">← Voltar para entrar</a
+        ><span class="eyebrow">PRIMEIRO ACESSO</span>
+        <h1>Faça parte do acompanhamento.</h1>
+        <p class="muted">
+          Solicite sua conta. A escola confere seus dados e aprova o acesso.
+        </p>
+        <form id="register-form" class="form-stack">
+          <label
+            >Nome completo<input
+              id="name"
+              autocomplete="name"
+              maxlength="120"
+              required
+          /></label>
+          <div class="form-grid">
+            <label
+              >Perfil solicitado<select id="role">
+                <option value="MONITOR">Monitor</option>
+                <option value="PROFESSOR">Professor</option>
+              </select></label
+            ><label
+              >RA
+              <span id="ra-hint" class="muted">Obrigatório para monitores</span
+              ><input
+                id="ra"
+                maxlength="40"
+                autocapitalize="characters"
+                spellcheck="false"
+                pattern="[A-Za-z0-9][A-Za-z0-9.\-]{0,39}"
+                required
+                aria-describedby="ra-instruction"
+            /></label>
+          </div>
+          <small id="ra-instruction"
+            >Use o RA já cadastrado pela escola. Os zeros à esquerda fazem parte
+            dele. Para professor, preencha apenas se você também possui
+            RA.</small
+          ><label
+            >E-mail<input
+              id="email"
+              type="email"
+              autocomplete="email"
+              maxlength="254"
+              required /></label
+          ><label
+            >Crie uma senha
+            <div class="password-field">
+              <input
+                id="password"
+                type="password"
+                autocomplete="new-password"
+                minlength="8"
+                maxlength="72"
+                required
+              /><button
+                type="button"
+                class="text-button"
+                data-password="#password"
+              >
+                Mostrar
+              </button>
+            </div></label
+          ><small
+            >Use pelo menos 8 caracteres. Evite nome, RA ou data de
+            nascimento.</small
+          ><label
+            >Confirme a senha<input
+              id="confirm-password"
+              type="password"
+              autocomplete="new-password"
+              minlength="8"
+              maxlength="72"
+              required
+          /></label>
+          <div id="feedback" class="alert hidden" role="alert"></div>
+          <button class="button primary" type="submit">
+            Enviar solicitação →
+          </button>
+        </form>
+        <div id="registration-success" class="empty hidden" role="status">
+          <span class="success-mark">✓</span>
+          <h2>Solicitação recebida</h2>
+          <p id="success-message"></p>
+          <a class="button primary" href="/">Voltar para entrar</a>
+        </div>
+      </section>
+      <p class="security-note">
+        O cadastro não libera acesso automático aos dados dos alunos.
+      </p>
+    </main>
+  </body>
+</html>
